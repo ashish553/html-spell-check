@@ -1,1 +1,1 @@
-A simple tool to check spelling mistakes in a .html file.
+A simple tool to check spelling mistakes in an .html file.
