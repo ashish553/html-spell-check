@@ -1,5 +1,4 @@
 const fs = require('fs')
-const { convert } = require('html-to-text');
 var XRegExp = require("xregexp");
 const spell = require('./spell-check/spell-check')
 spell.load('en')
