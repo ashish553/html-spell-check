@@ -1,5 +1,6 @@
 const fs = require('fs')
 const { convert } = require('html-to-text');
+var XRegExp = require("xregexp");
 const spell = require('./spell-check/spell-check')
 spell.load('en')
 
@@ -24,6 +25,14 @@ function delFile(filename){
         });
 }
 
+// extract text between tags from html data.
+function html2text(htmlString){
+    let removeTags = XRegExp('(<([^>]+)>)','g') //remove all tags with/without attributes. Ex - <html></html>, <div></div>, <a href="www">,
+    let removeSpecialChar = XRegExp('[^a-zA-Z ]','g') //remove special characters and numbers. Ex - , . @ # etc
+    let removeWhitespaces = XRegExp(' +','g') //remove extra whitespaces
+    return htmlString.replace(removeTags,' ').replace(removeSpecialChar,' ').replace(removeWhitespaces,' ')
+}
+
 let a
 try{
     let allLines = getArrayOfDataInFile('./testFile.html')
@@ -34,19 +43,18 @@ try{
     let lineNumber = 0, incorrectLineNumberArray = []
     newData.forEach(eachLine => {
         lineNumber += 1
-        if(convert(eachLine)!==''){
-            fs.writeFileSync('./textc.txt',convert(eachLine).replaceAll('\n',' ')+'\r\n',{flag: 'a+'})
+        // if(html2text(eachLine)!==''){
+            fs.writeFileSync('./textc.txt',html2text(eachLine)+'\r\n',{flag: 'a+'})
             incorrectLineNumberArray.push(lineNumber)
-        }
+        // }
     });
     let htmlTagTextArray = getArrayOfDataInFile('./textc.txt')
-    // console.log(htmlTagTextArray);
     let incorrectWordist
     for(let i=0;i<htmlTagTextArray.length;++i){
         incorrectWordist = spell.check(htmlTagTextArray[i])
-        // if(spell.check(htmlTagTextArray[i])!==[]){
+        if(incorrectWordist.length!==0){
             console.log(incorrectWordist+" : "+incorrectLineNumberArray[i])
-        // }
+        }
     }
     delFile('./textc.txt')
     delFile('./writenByApp.txt')
