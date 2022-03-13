@@ -10,7 +10,9 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.3",
+    "gramma": "^1.6.0",
     "node-gyp": "^9.0.0",
+    "write-good": "^1.0.8",
     "xregexp": "^5.1.0"
   }
 }
