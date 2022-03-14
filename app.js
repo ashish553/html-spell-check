@@ -79,41 +79,27 @@ try{
     let lineNumberForP = 0
     let lineNumberForPArr = []
     const matchesArr= []
+    var promises = []
     for(let i=0;i<dataForP.length;i++){
         if(dataForP[i]!==''){
-            allErrors = gramma.check(dataForP[i]).then((result) => {
-                lineNumberForP += 1
-                matchesArr.push(result.matches)
-                lineNumberForPArr.push(i+1)
-                return matchesArr
-            })
-
+            promises.push(gramma.check(dataForP[i]))
+            lineNumberForP += 1
+            lineNumberForPArr.push(i+1)
         }
     }
-    const printAllErrors = ()=>{
-        allErrors.then((errorsWeGot)=>{
-            console.log(errorsWeGot);
-            console.log(lineNumberForPArr);
-        })
-    }
-    printAllErrors()
-    console.log(lineNumberForPArr)
-    function getGrammaErrors(dataForP,i,lineNumberForP){
-        
-        return new Promise((resolve, rejects)=>{
-            gramma.check(dataForP[i]).then((result)=>{
-                hehe[lineNumberForP] = result
-                lineNumberForPArr.push(lineNumberForP)
-            })
-            const error = false
-            if(!error){
-                resolve()
-            }else{
-                rejects()
+    let resolveAllPromises = Promise.all(promises).then(result=>{
+            for(let results of result){
+                matchesArr.push(results.matches)
             }
+            return matchesArr
         })
-    }
-    
+    resolveAllPromises.then((resulta)=>{
+         for(let i=0;i<resulta.length;i++){
+             console.log(resulta[i]);
+             console.log(lineNumberForPArr[i]);
+         }
+    })
+     
     delFile('./textcForP.txt')
     delFile('./textc.txt')
     delFile('./writenByApp.txt')
