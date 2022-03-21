@@ -1,7 +1,6 @@
 const fs = require('fs')
 var XRegExp = require("xregexp");
 const spell = require('./spell-check/spell-check')
-var writeGood = require('write-good');
 const gramma = require('gramma');
 const { resolve } = require('path');
 const { rejects } = require('assert');
@@ -59,12 +58,14 @@ try{
     });
     let htmlTagTextArray = getArrayOfDataInFile('./textc.txt')
     let incorrectWordist
+    console.log('\n--------------> Spelling Errors <--------------\n');
     for(let i=0;i<htmlTagTextArray.length;++i){
         incorrectWordist = spell.check(htmlTagTextArray[i])
         if(incorrectWordist.length!==0){
             console.log(incorrectWordist+" : "+incorrectLineNumberArray[i])
         }
     }
+    console.log('\n----------------------------------------------- ');
     let readForGrammar = getArrayOfDataInFile('./writenByApp.txt')
     // let lineNumberForP = 0
     incorrectLineNumberArray = []
@@ -93,11 +94,16 @@ try{
             }
             return matchesArr
         })
+    console.log('\n--------------> Grammar Errors <--------------\n');
     resolveAllPromises.then((resulta)=>{
          for(let i=0;i<resulta.length;i++){
-             console.log(resulta[i]);
-             console.log(lineNumberForPArr[i]);
+             if(resulta[i].length!==0){
+                getFormattedError(resulta[i])
+                console.log(`LineNumber : ${lineNumberForPArr[i]}`);
+                console.log('\n');
+             }
          }
+    console.log('-------------------------------------------------');
     })
      
     delFile('./textcForP.txt')
@@ -107,3 +113,12 @@ try{
     console.log(err);
 }
 
+function getFormattedError(errArray){
+    let count = 0
+     errArray.forEach(element => {
+         count += 1
+         console.log(`Error ${count} \n Message : ${element.message}`)
+         console.log(` Sentence : ${element.sentence}`)
+         console.log(` Word : ${element.word}`)
+     });
+}
