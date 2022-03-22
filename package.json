@@ -1,6 +1,6 @@
 {
   "name": "spell-check",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,11 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dictionary-en": "^3.1.0",
     "express": "^4.17.3",
-    "html-to-text": "^8.1.0",
+    "gramma": "^1.6.0",
+    "jssoup": "^0.0.15",
     "node-gyp": "^9.0.0",
-    "nspell": "^2.1.5",
-    "spell-checker-js": "^1.2.6"
+    "write-good": "^1.0.8",
+    "xregexp": "^5.1.0"
   }
 }
