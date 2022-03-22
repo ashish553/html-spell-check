@@ -4,6 +4,7 @@ const spell = require('./spell-check/spell-check')
 const gramma = require('gramma');
 const { resolve } = require('path');
 const { rejects } = require('assert');
+const JSSoup = require('jssoup').default
 
 spell.load('en')
 
@@ -76,7 +77,9 @@ try{
             incorrectLineNumberArray.push(lineNumber)
         // }
     });
-    let dataForP = getArrayOfDataInFile('./textcForP.txt');
+    let readHTML = fs.readFileSync('./testFile.html', 'utf-8')
+    let jsSoup = new JSSoup(readHTML)
+    let dataForP = jsSoup.getText('\n').split('\n');
     let lineNumberForP = 0
     let lineNumberForPArr = []
     const matchesArr= []
@@ -96,11 +99,13 @@ try{
         })
     console.log('\n--------------> Grammar Errors <--------------\n');
     resolveAllPromises.then((resulta)=>{
+        let count = 0
          for(let i=0;i<resulta.length;i++){
              if(resulta[i].length!==0){
-                getFormattedError(resulta[i])
-                console.log(`LineNumber : ${lineNumberForPArr[i]}`);
-                console.log('\n');
+                 count += 1
+                getFormattedError(resulta[i],count)
+                // console.log(`LineNumber : ${lineNumberForPArr[i]}`);
+                // console.log('\n');
              }
          }
     console.log('-------------------------------------------------');
@@ -113,10 +118,8 @@ try{
     console.log(err);
 }
 
-function getFormattedError(errArray){
-    let count = 0
+function getFormattedError(errArray,count){
      errArray.forEach(element => {
-         count += 1
          console.log(`Error ${count} \n Message : ${element.message}`)
          console.log(` Sentence : ${element.sentence}`)
          console.log(` Word : ${element.word}`)
